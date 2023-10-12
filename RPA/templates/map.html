@@ -43,7 +43,7 @@
                 center: {lat: 48.35, lng: -3.95}, // Coordonnées du centre de la carte
             });
             var a = {{ a|tojson|safe }};
-            var kmlUrl = `https://0c5c-2a01-e0a-66-3560-b078-33ce-736-dca4.ngrok-free.app/data/itineraires/${a}.kml`;
+            var kmlUrl = `https://lucca646.github.io/RPA/data/itineraires/${a}.kml`;
 
             var kmlLayer = new google.maps.KmlLayer({
                 url: kmlUrl,
