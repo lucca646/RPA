@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Carte Interactive</title>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC-SwGq0pI10yVlVQIIfBqdfUc1BsRWyM&libraries=drawing,geometry"></script>
+    <style>
+        #map {
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <button id="finishSelection">Terminer la sélection</button>
+    <a id="downloadLink" style="display: none">Télécharger le fichier GPX</a>
+
+    <script>
+        var map;
+        var drawingManager;
+        var selectedPoints = [];
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: {lat: 51.505, lng: -0.09},
+                zoom: 13
+            });
+
+            drawingManager = new google.maps.drawing.DrawingManager({
+                drawingMode: google.maps.drawing.OverlayType.MARKER,
+                drawingControl: true,
+                drawingControlOptions: {
+                    position: google.maps.ControlPosition.TOP_CENTER,
+                    drawingModes: [google.maps.drawing.OverlayType.MARKER]
+                }
+            });
+            drawingManager.setMap(map);
+
+            google.maps.event.addListener(drawingManager, 'markercomplete', function(marker) {
+                selectedPoints.push(marker.getPosition());
+            });
+
+            var finishButton = document.getElementById("finishSelection");
+            finishButton.addEventListener("click", function() {
+                finishSelection();
+            });
+        }
+
+        function finishSelection() {
+            var gpxData = new gpxBuilder();
+            selectedPoints.forEach(function(point) {
+                gpxData.addWaypoint({ lat: point.lat(), lon: point.lng() });
+            });
+
+            var gpxContent = gpxData.build();
+            var blob = new Blob([gpxContent], { type: "application/gpx+xml" });
+            var url = URL.createObjectURL(blob);
+            var downloadLink = document.getElementById('downloadLink');
+            downloadLink.href = url;
+            downloadLink.download = "track.gpx";
+            downloadLink.style.display = 'block';
+        }
+    </script>
+</body>
+</html>

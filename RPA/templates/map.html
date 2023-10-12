@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Itinéraire KML</title>
+    <link rel="stylesheet" type="text/css" href="templates/styles.css">
+
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDC-SwGq0pI10yVlVQIIfBqdfUc1BsRWyM&libraries=visualization"></script>
+    
+    <style>
+        /* Styles pour le conteneur de la carte */
+        #map {
+            height: 400px;
+            width: 100%;
+        }
+
+        /* Styles pour le bouton de téléchargement */
+        form {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10, // Ajustez le niveau de zoom selon vos besoins
+                center: {lat: 48.35, lng: -3.95}, // Coordonnées du centre de la carte
+            });
+            var a = {{ a|tojson|safe }};
+            var kmlUrl = `https://0c5c-2a01-e0a-66-3560-b078-33ce-736-dca4.ngrok-free.app/data/itineraires/${a}.kml`;
+
+            var kmlLayer = new google.maps.KmlLayer({
+                url: kmlUrl,
+                map: map,
+            });
+        }
+
+        google.maps.event.addDomListener(window, 'load', initMap);
+    </script>
+
+    <form action="/download_kml" method="get">
+        <button type="submit">Télécharger l'itinéraire KML</button>
+    </form>
+</body>
+</html>
